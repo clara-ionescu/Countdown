@@ -1,0 +1,30 @@
+module Choices where                                                                                                                               
+                                                                                                                                                   
+subs []     = [[]]                                                                                                                                 
+subs (x:xs) = map (x:) xss ++ xss                                                                                                                  
+  where                                                                                                                                            
+    xss = subs xs                                                                                                                                  
+                                                                                                                                                   
+-- 0 [1,2] = [0,1,2] [1,0,2] [1,2,0]                                                                                                               
+interleave :: a -> [a] -> [[a]]                                                                                                                    
+interleave y [] = [[y]]                                                                                                                            
+interleave y (x:xs) = [y:x:xs]   ++ map (x:) xss                                                                                                   
+  where                                                                                                                                            
+    xss = interleave y xs                                                                                                                          
+                                                                                                                                                   
+                                                                                                                                                   
+perms :: [a] -> [[a]]                                                                                                                              
+perms [] = [[]]                                                                                                                                    
+perms (x:xs) = concat (map (interleave x) xss)                                                                                                     
+  where                                                                                                                                            
+    xss = perms xs                                                                                                                                 
+                                                                                                                                                   
+                                                                                                                                                   
+choices :: [a] -> [[a]]                                                                                                                            
+choices [] = [[]]                                                                                                                                  
+choices xs = concat (map perms (subs xs))                                                                                                          
+                                                                                                                                                   
+split :: [a] -> [([a],[a])]                                                                                                                        
+split [] = []                                                                                                                                      
+split [_] = []                                                                                                                                     
+split (x:xs) = ([x],xs) : [(x:ls,rs) | (ls,rs) <- split xs]
